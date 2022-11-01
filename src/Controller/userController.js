@@ -12,6 +12,23 @@ const userReg = async (req,res)=>{
 
         let {name, email, password} = data;
 
+        if (!validation.isValidRequestBody(data)) return res.status(400).send({ status: false, msg: "please provide  data in body" });
+
+
+        if (!validation.isValid(name)) return res.status(400).send({ status: false, message: " name is required or not valid" });
+
+
+        if (!validation.isValid(email)) return res.status(400).send({ status: false, message: "email is required or not valid" })
+        if (!validation.isValidEmail(email)) return res.status(400).send({ status: false, message: "email is not valid" })
+        let checkEmail = await userModel.findOne({ email: email })
+        if (checkEmail) return res.status(409).send({ status: false, msg: "email already exist" })
+
+
+        if (!validation.isValid(password)) return res.status(400).send({ status: false, message: "Pasworrd is required or not valid" })
+        if (!validation.isValidPassword(password)) return res.status(400).send({ status: false, message: "Password length should be 8 to 15 digits and enter atleast one uppercase or lowercase" })
+
+
+
 
         const saltRounds = 10
         const hash = bcrypt.hashSync(password, saltRounds)
@@ -79,6 +96,24 @@ const userUpdate = async (req, res)=>{
 
         let {name, email, password } = data;
 
+        if (!validation.isValidRequestBody(data)) return res.status(400).send({ status: false, msg: "please provide  details" });
+
+
+        if (!validation.isValid(name)) return res.status(400).send({ status: false, message: " name is required or not valid" });
+
+
+        if (!validation.isValid(email)) return res.status(400).send({ status: false, message: "email is required or not valid" })
+        if (!validation.isValidEmail(email)) return res.status(400).send({ status: false, message: "email is not valid" })
+        let checkEmail = await userModel.findOne({ email: email })
+        if (checkEmail) return res.status(409).send({ status: false, msg: "email already exist" })
+
+        if (!validation.isValid(password)) return res.status(400).send({ status: false, message: "Pasworrd is required or not valid" })
+        if (!validation.isValidPassword(password)) return res.status(400).send({ status: false, message: "Password length should be 8 to 15 digits and enter atleast one uppercase or lowercase" })
+
+
+
+
+
         let updatedData = await userModel.findOneAndUpdate({_id: userId, isDeleted: false},data,{new: true});
 
         return res.status(201).send({status: true, data: updatedData})
@@ -96,7 +131,10 @@ const delUser = async (req, res)=>{
      console.log(tokenId)
      if (!(userId == tokenId)) return res.status(401).send({ status: false, message: `Unauthorized access! Owner info doesn't match` });
 
-    await userModel.findOneAndUpdate({_id: userId, isDeleted: false},{isDeleted: true})
+    
+     let data = await userModel.findOneAndUpdate({_id: userId, isDeleted: false},{isDeleted: true})
+
+     if (data == null) return res.status(404).send({ status: false, message: "user is not found, or deleted" })
 
     return res.status(200).send({status: true, msg:'Deleted successfulll'})
     } catch(err){
