@@ -4,25 +4,28 @@ const router = express.Router()
 const userControler = require('../Controller/userController');
 const topicController = require('../Controller/topicController')
 const rankController = require('../Controller/rankController')
+const Auth = require('../Auth/authorization')
 
 
 
 router.post('/api/user/reg', userControler.userReg);
 
-router.put('/api/user/:userid', userControler.userUpdate);
+router.post('/login', userControler.loginUser)
 
-router.delete('/api/user/:userid', userControler.delUser);
+router.put('/api/user/:userid', Auth.authorization, userControler.userUpdate);
 
-
-
-
-router.post('/api/topic/reg', topicController.createTopic)
-
-router.delete('/api/topic/:topicid', topicController.deleTopic)
+router.delete('/api/user/:userid', Auth.authorization, userControler.delUser);
 
 
-router.post('/api/giverank', rankController.createRank)
 
-router.get('/api/rank/getRank/:userid', rankController.getUser)
+
+router.post('/api/topic/reg/:userid',Auth.authorization, topicController.createTopic)
+
+router.delete('/api/topic/:topicid/:userid', topicController.deleTopic)
+
+
+router.post('/api/giverank', Auth.authorization, rankController.createRank)
+
+router.get('/api/rank/getRank/:userid', Auth.authorization, rankController.getUser)
 
 module.exports = router

@@ -1,10 +1,18 @@
 const topicModel = require("../Model/topicModel")
+const userModel =require('../Model/userModel')
 
 const createTopic = async (req, res)=>{
     try{
+        let userid = req.params.userid
     let topicName = req.body;
 
+    let admin = await userModel.findById({_id:userid})
     //let {topicModel} = data
+    console.log(admin)
+    
+    let tokenId = req.userId
+   if (!(userid == tokenId)) return res.status(401).send({ status: false, message: `Unauthorized access! Owner info doesn't match` });
+   if (admin.isAdmin  === false) return res.status(401).send({ status: false, message: `Unauthorized access! Owner info doesn't match` });
 
     let newData = await topicModel.create(topicName)
 
