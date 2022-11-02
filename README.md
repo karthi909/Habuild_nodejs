@@ -95,25 +95,36 @@
   4) we can do CURD operations for both groups and when come to ranking, we had reffeered the user collection and topic collection to Rank collection
 
 ## Routes
-- '/api/user/reg'
-  1) Used for registration 
 
-- '/login'
-  2) used 
+Ecxept logIn and signUP each route is authenticated and authorized. 
 
-- '/api/user/:userid'
+### User Routes
+-  POST '/api/user/reg'
+   1) Used for registration 
 
-- '/api/user/:userid'
+- POST '/login'
+  1) user will login and wew get the userid with JWT token in response
+
+- PUT '/api/user/:userid'
+  1) used for update the details of tehe user or the admin
+
+- DELETE '/api/user/:userid'
+  1) delete the perticular with the help of userId
 
 
 
+### Topic Routes
+- POST '/api/topic/reg/:userid'
+  1) used for creating of topics only Admin can create it
 
-- '/api/topic/reg/:userid'
+- PUT '/api/topic/:topicid/:userid'
+  1) Delete the perticular topic with topicId and only Admin can delete it
 
-- '/api/topic/:topicid/:userid'
 
+### Rank rotes
+- POST '/api/giverank'
+  1) it will take userID, topicId and ranking from 1-100.
 
-- '/api/giverank'
-
-- '/api/rank/getRank/:userid'
-
+- GET '/api/rank/getRank/:userid'
+  1) we will get ranks by userid, when user/admin gives userid from body it will get all the documents that match with the userid and we will populate both user details and topic details by this we can achive the final result. 
+  2) It shows that perticular user details with topic and the ranking obtained for that topic.
